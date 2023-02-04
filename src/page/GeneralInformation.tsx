@@ -6,35 +6,35 @@ import { useEffect, useState } from 'react';
 
 function GeneralInformation() {
 
-  const navigate = useNavigate();
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
-
   const [image, setImage] = useState("")
+  const [values, setValues] = useState()
+
+  const navigate = useNavigate();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+    mode: "onChange",
+    values
+  });
 
 
   useEffect(() => {
+
     const jsonStr = localStorage.getItem("generalInfo");
     if (jsonStr === null ) return;
     const formValues = JSON.parse(jsonStr);
 
-    setValue("name", formValues.name)
-    setValue("surname", formValues.surname)
+    setValues(formValues)
     setImage(formValues.image)
-    setValue("aboutme", formValues.aboutme)
-    setValue("email", formValues.email)
-    setValue("mobileNumber", formValues.mobileNumber)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
+    localStorage.setItem("generalInfo", JSON.stringify(watch()));  
 
-      localStorage.setItem("generalInfo", JSON.stringify(watch()));  
-      
-      if(image !== "") {
-        const jsonStr = JSON.parse(localStorage.getItem("generalInfo" ) as string );
-        localStorage.setItem("generalInfo", JSON.stringify({...jsonStr, image: image}));   
-      }
+    if(image !== "") {
+      const jsonStr = JSON.parse(localStorage.getItem("generalInfo" ) as string );
+      localStorage.setItem("generalInfo", JSON.stringify({...jsonStr, image: image}));   
+    }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch(), image])
@@ -72,6 +72,9 @@ function GeneralInformation() {
 
               <label htmlFor="name">სახელი</label>
               <input type="text"  {...register("name", {required: true, minLength: 2,   pattern: /^[\u10A0-\u10FF]+$/ })}  />
+              {errors.name?.type === "required" && <span>არ დატოვე ცარიელი</span> }
+              {errors.name?.type === "pattern" && <span>შეიყვანე ქართულად</span> }
+
 
               <label htmlFor="surname">გვარი</label>
               <input   type="text" {...register("surname", { required: true, minLength:2, pattern: /^[\u10A0-\u10FF]+$/ })} />
@@ -83,10 +86,15 @@ function GeneralInformation() {
               <textarea   {...register("aboutme", { pattern: /^[\u10A0-\u10FF]+$/ })} /> i
 
               <label htmlFor="email">ელ.ფოსტა</label>
-              <input   type="email" {...register("email", {required: true,  pattern: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(redberry\.ge)$/ })} />
+              <input  
+                 type="email"
+                 {...register("email", {required: true,  pattern:  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(redberry\.ge)$/ })} 
+                />
+               {errors.email?.type === "pattern" && <span>eehh meili arasowria</span> }
 
               <label htmlFor="mobileNumber">მობილურის ნომერი</label>
               <input   type="tel" {...register("mobileNumber", { required: true,  pattern: /^(\+995)(79\d{7}|5\d{8})$/ })} />
+              {errors.mobileNumber?.type === "pattern" && <span>telefoni arasworiaaa</span> }
 
               <input type="submit" value="შემდეგი" />
 
