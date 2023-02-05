@@ -41,11 +41,22 @@ function GeneralInformation() {
  
 
   const handleImage = (e: any) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {  setImage(reader.result?.toString() as string)}
-      reader.readAsDataURL(e.target.files[0])
-  }
 
+    // way 1
+    const reader = new FileReader();
+    reader.onloadend = () => {  setImage(reader.result?.toString() as string)}
+    reader.readAsDataURL(e.target.files[0])
+
+    //way 2
+    // const reader = new FileReader();
+    // reader.onload = () => {  setImage(reader.result?.toString() as string)}
+    // reader.readAsBinaryString(e.target.files[0])
+
+    //way 3
+    // setImage(URL.createObjectURL(e.target.files[0] ))
+    }
+    
+  console.log(image)
 
   const onSubmit = (data: any) => {
     console.log( "dataaaa", data);
@@ -79,8 +90,7 @@ function GeneralInformation() {
               <label htmlFor="surname">გვარი</label>
               <input   type="text" {...register("surname", { required: true, minLength:2, pattern: /^[\u10A0-\u10FF]+$/ })} />
 
-              <label>პირადი ფოტოს ატვირთვა</label>
-              <input  type="file" {...register('image', { required: true, onChange: handleImage})} accept="image/*"/>
+              <label>პირადი ფოტოს ატვირთვა</label>              <input  type="file" {...register('image', { required: true, onChange: handleImage})} accept="image/*"/>
 
               <label htmlFor='aboutme'>ჩემს შესახებ (არასავალდებულო)</label>
               <textarea   {...register("aboutme", { pattern: /^[\u10A0-\u10FF]+$/ })} /> i
@@ -108,7 +118,7 @@ function GeneralInformation() {
 
           { watch("name") }
           {watch("surname")}
-          {image && <img src={image} alt="es aris fhoto" />}
+          {image !== "" && <img src={image} alt="es aris fhoto" />}
           { watch("aboutme") }
           { watch("email") }
           {watch("mobileNumber")}
