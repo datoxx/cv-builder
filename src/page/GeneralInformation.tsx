@@ -42,18 +42,9 @@ function GeneralInformation() {
 
   const handleImage = (e: any) => {
 
-    // way 1
     const reader = new FileReader();
     reader.onloadend = () => {  setImage(reader.result?.toString() as string)}
     reader.readAsDataURL(e.target.files[0])
-
-    //way 2
-    // const reader = new FileReader();
-    // reader.onload = () => {  setImage(reader.result?.toString() as string)}
-    // reader.readAsBinaryString(e.target.files[0])
-
-    //way 3
-    // setImage(URL.createObjectURL(e.target.files[0] ))
     }
     
   console.log(image)
