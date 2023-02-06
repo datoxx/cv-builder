@@ -1,6 +1,7 @@
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { FormValues } from '../types';
 
 
 function Experience() {
@@ -8,7 +9,7 @@ function Experience() {
   const navigate = useNavigate();
   const [values, setValues] = useState()
 
-  const { register, handleSubmit, watch, getValues, formState: { errors }, control } = useForm({
+  const { register, handleSubmit, watch, getValues, formState: { errors }, control } = useForm<FormValues>({
     mode: "onChange",
     defaultValues: {
       experience:[{
@@ -41,7 +42,7 @@ function Experience() {
   }, [watch()])
  
 
-  const { fields, append, remove, } = useFieldArray({
+  const { fields, append, remove, } = useFieldArray<FormValues>({
     name: "experience",
     control
   })
