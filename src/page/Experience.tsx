@@ -8,12 +8,12 @@ function Experience() {
   const navigate = useNavigate();
   const [values, setValues] = useState()
 
-  const { register, handleSubmit, watch, formState: { errors }, control } = useForm({
+  const { register, handleSubmit, watch, getValues, formState: { errors }, control } = useForm({
     mode: "onChange",
     defaultValues: {
       experience:[{
-        name: "", 
-        username: "",
+        position: "", 
+        employer: "",
         description: "",
         startDate: "",
         endDate: ""
@@ -57,7 +57,6 @@ function Experience() {
 
   const checkRequired = (index: number) => {
         for (let [key, value] of Object.entries(watch().experience?.[index])) {
-          console.log("ramdenjer eSveba")
           if(value !== "") {
             return true
           } else {
@@ -67,6 +66,8 @@ function Experience() {
     
 
   }
+
+  console.log(getValues("experience"))
 
   return (
     <div>
@@ -79,13 +80,13 @@ function Experience() {
 
                 <label >
                   <span>თანამდებობა</span>
-                  <input type="text"  {...register(`experience.${index}.name`, {required: index === 0 ? true : checkRequired(index) , minLength: 2, })}  />
+                  <input type="text"  {...register(`experience.${index}.position`, {required: index === 0 ? true : checkRequired(index) , minLength: 2, })}  />
                 </label>
 
 
                 <label>
                 <span>დამსაქმებელი</span>
-                   <input   type="text" {...register(`experience.${index}.username`, {required: index === 0 ? true : checkRequired(index), minLength:2, })} />
+                   <input   type="text" {...register(`experience.${index}.employer`, {required: index === 0 ? true : checkRequired(index), minLength:2, })} />
                 </label>
 
 
@@ -112,8 +113,8 @@ function Experience() {
 
           <button type='button' onClick={() => {
             append({
-              name: "",
-              username: "",
+              position: "",
+              employer: "",
               description: "",
               startDate: "",
               endDate: ""
@@ -125,6 +126,19 @@ function Experience() {
 
         </form>
 
+            <div>
+                {getValues("experience").map((item) =>  {
+                 return  <section key={Math.floor(Math.random() * (1000000 - 1 + 1) + 1)} >
+                      <p>{item.position}</p>
+                      <p>{item.employer}</p>
+                      <p>{item.description}</p>
+                      <p>{item.startDate}</p>
+                      <p>{item.endDate}</p>
+                      <hr />
+                  </section>
+                }) }
+                {/* { getValues("experience")[0].name} */}
+            </div>
     </div>
   )
 }
