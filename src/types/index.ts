@@ -1,15 +1,15 @@
 export type FormValues = {
-    experience: {
+    experiences: {
         position?: string | undefined;
         employer?: string | undefined;
         description?: string | undefined;
-        startDate?: string | undefined;
-        endDate?: string | undefined;
+        start_date?: string | undefined;
+        due_date?: string | undefined;
     }[];
-    education: {
-        school: String | undefined;
-        degree?: string | undefined;
-        endDate?: string | undefined;
+    educations: {
+        institute?: String | undefined;
+        degree_id ?: string | number;
+        due_date?: string | undefined;
         description?: string | undefined;
     }[];
   };
