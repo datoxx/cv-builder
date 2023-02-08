@@ -1,6 +1,7 @@
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { FormValues } from '../types';
 
 
 function Experience() {
@@ -8,15 +9,15 @@ function Experience() {
   const navigate = useNavigate();
   const [values, setValues] = useState()
 
-  const { register, handleSubmit, watch, getValues, formState: { errors }, control } = useForm({
+  const { register, handleSubmit, watch, getValues, formState: { errors }, control } = useForm<FormValues>({
     mode: "onChange",
     defaultValues: {
-      experience:[{
+      experiences:[{
         position: "", 
         employer: "",
         description: "",
-        startDate: "",
-        endDate: ""
+        start_date: "",
+        due_date: ""
      }]
     },
     values
@@ -25,7 +26,7 @@ function Experience() {
 
   useEffect(() => {
 
-    const jsonStr = localStorage.getItem("experience");
+    const jsonStr = localStorage.getItem("experiences");
     if (jsonStr === null ) return;
     const formValues = JSON.parse(jsonStr);
 
@@ -35,14 +36,14 @@ function Experience() {
   }, [])
 
   useEffect(() => {
-    localStorage.setItem("experience", JSON.stringify(watch()));  
+    localStorage.setItem("experiences", JSON.stringify(watch()));  
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch()])
  
 
-  const { fields, append, remove, } = useFieldArray({
-    name: "experience",
+  const { fields, append, remove, } = useFieldArray<FormValues>({
+    name: "experiences",
     control
   })
 
@@ -56,7 +57,7 @@ function Experience() {
   // console.log("uyure>>", watch().experience)
 
   const checkRequired = (index: number) => {
-        for (let [key, value] of Object.entries(watch().experience?.[index])) {
+        for (let [key, value] of Object.entries(watch().experiences?.[index])) {
           if(value !== "") {
             return true
           } else {
@@ -67,7 +68,7 @@ function Experience() {
 
   }
 
-  console.log(getValues("experience"))
+  console.log(getValues("experiences"))
 
   return (
     <div>
@@ -80,29 +81,29 @@ function Experience() {
 
                 <label >
                   <span>თანამდებობა</span>
-                  <input type="text"  {...register(`experience.${index}.position`, {required: index === 0 ? true : checkRequired(index) , minLength: 2, })}  />
+                  <input type="text"  {...register(`experiences.${index}.position`, {required: index === 0 ? true : checkRequired(index) , minLength: 2, })}  />
                 </label>
 
 
                 <label>
                 <span>დამსაქმებელი</span>
-                   <input   type="text" {...register(`experience.${index}.employer`, {required: index === 0 ? true : checkRequired(index), minLength:2, })} />
+                   <input   type="text" {...register(`experiences.${index}.employer`, {required: index === 0 ? true : checkRequired(index), minLength:2, })} />
                 </label>
 
 
                 <label>
                 <span>დაწყების დრო</span>
-                <input type="date" {...register(`experience.${index}.startDate`, { required: index === 0 ? true : checkRequired(index) })} />
+                <input type="date" {...register(`experiences.${index}.start_date`, { required: index === 0 ? true : checkRequired(index) })} />
                 </label>
 
                 <label>
                 <span>დამთავრების დრო</span>
-                <input type="date" {...register(`experience.${index}.endDate`,  {required: index === 0 ? true : checkRequired(index)  })} />
+                <input type="date" {...register(`experiences.${index}.due_date`,  {required: index === 0 ? true : checkRequired(index)  })} />
                 </label>
 
                 <label >
                 <span>Description</span>
-                <textarea   {...register(`experience.${index}.description`, {  required: index === 0 ? true : checkRequired(index) })} /> 
+                <textarea   {...register(`experiences.${index}.description`, {  required: index === 0 ? true : checkRequired(index) })} /> 
                 </label>
 
              {index > 0 && <button type='button' onClick={() => remove(index)} >წაშლა</button>}
@@ -116,8 +117,8 @@ function Experience() {
               position: "",
               employer: "",
               description: "",
-              startDate: "",
-              endDate: ""
+              start_date: "",
+              due_date: ""
             })
           }}>
             დაამატე ახალი
@@ -127,17 +128,16 @@ function Experience() {
         </form>
 
             <div>
-                {getValues("experience").map((item) =>  {
+                {getValues("experiences").map((item) =>  {
                  return  <section key={Math.floor(Math.random() * (1000000 - 1 + 1) + 1)} >
                       <p>{item.position}</p>
                       <p>{item.employer}</p>
                       <p>{item.description}</p>
-                      <p>{item.startDate}</p>
-                      <p>{item.endDate}</p>
+                      <p>{item.start_date}</p>
+                      <p>{item.due_date}</p>
                       <hr />
                   </section>
                 }) }
-                {/* { getValues("experience")[0].name} */}
             </div>
     </div>
   )
