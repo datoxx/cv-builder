@@ -5,6 +5,8 @@ import { useContext } from "react";
 import { StoreContext } from '../context';
 import { FormValues } from '../types';
 import axios from 'axios';
+import FormsHeader from '../components/FormsHeader';
+import FormFooter from '../components/FormFooter';
 
 
 type DegreeType = {
@@ -17,7 +19,6 @@ function Education() {
   const navigate = useNavigate();
 
   const { contextImage } = useContext<any>(StoreContext)
-  const [testimage, setTestimage] = useState<any>();
 
   const [values, setValues] = useState<any>()
   const [optionsValues, setOptionsValues] = useState<DegreeType[]>([])
@@ -73,7 +74,6 @@ function Education() {
     const jsongeneralinfo = localStorage.getItem("generalInfo");
     const jsonexperiences = localStorage.getItem("experiences");
     const jsoneducations = localStorage.getItem("educations");
-    // const image = JSON.parse(localStorage.getItem("image" ) as string );
 
     if (jsongeneralinfo === null || jsonexperiences === null || jsoneducations === null ) return;
 
@@ -84,26 +84,13 @@ function Education() {
     console.log("localstorage generalinfo", generadlinfo);
     console.log("localstorage experiences", experiences);
     console.log("localstorage educations", educations);
-    console.log("imageee>>>>imagee>>>", contextImage);
     console.log("imageee>>>>bineryy>>>", generadlinfo.image);
 
-
-  //  const gaigavnosphoto = generadlinfo.image.replace(/^data:image\/(png|jpg);base64,/, "");
 
     const formData = new FormData();
     formData.append('image', generadlinfo.image);
 
     console.log("formData>>>", formData)
-
-
-    // const reader = new FileReader();
-    // reader.readAsArrayBuffer(contextImage);
-    // reader.onloadend = function() {
-    //   let  imageBinary: string | ArrayBuffer | null = new Uint8Array(reader.result as any);
-    //   console.log("imageBinaryimageBinary<>>>>>>>>",imageBinary)
-    //   setTestimage(imageBinary)
-    //   // now you have the binary data of the image stored in `imageBinary`
-    // };
 
 
 
@@ -115,23 +102,37 @@ function Education() {
       phone_number: generadlinfo.phone_number,
       ...experiences,
       ...educations,
-      image: formData,
       about_me: generadlinfo.about_me
     }
 
     console.log("responsData>>>>>>", responsData)
 
+    
 
+    fetch(generadlinfo.image)
+    .then((res) => res.blob())
+    .then((blob) => {
+      const newFile = new File([blob], "image");
+      responsData.image = newFile;
+      sendResponse(responsData as any);
+    });
 
-    const sendResponse  = async () => {
+    const sendResponse  = async (props: any) => {
 
-      const response = await axios.post("https://resume.redberryinternship.ge/api/cvs",  responsData);
+      const response = await axios.post("https://resume.redberryinternship.ge/api/cvs",  props, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       
       console.log("beqidan dabrunebuli pasuxiii>>>>", response.data)
 
     }
 
-    sendResponse()
+
+
+
+
 
 
     // navigate("/resume");
@@ -152,6 +153,8 @@ function Education() {
 
   return (
     <div>
+
+    <FormsHeader />
 
     <form  onSubmit={handleSubmit(onSubmit)} >
 
@@ -202,7 +205,8 @@ function Education() {
       }}>
         დაამატე ახალი
       </button>
-      <input type="submit" value="დასრულება" />
+      <FormFooter />
+
 
     </form>
 

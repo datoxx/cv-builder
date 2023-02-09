@@ -2,6 +2,8 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { FormValues } from '../types';
+import FormsHeader from '../components/FormsHeader';
+import FormFooter from '../components/FormFooter';
 
 
 function Experience() {
@@ -73,6 +75,8 @@ function Experience() {
   return (
     <div>
 
+        <FormsHeader />
+
         <form  onSubmit={handleSubmit(onSubmit)} >
 
 
@@ -123,7 +127,9 @@ function Experience() {
           }}>
             დაამატე ახალი
           </button>
-          <input type="submit" value="შემდეგი" />
+          
+          <FormFooter />
+
 
         </form>
 

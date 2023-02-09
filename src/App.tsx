@@ -9,7 +9,6 @@ import FormsContext from "./context";
 
 function App() {
   return (
-    <div >
       <FormsContext>
         <Routes>
             <Route path='/' element={<Home />} /> 
@@ -19,8 +18,6 @@ function App() {
             <Route path='/resume' element={<Resume />} />
           </Routes>
       </FormsContext>
-
-    </div>
   );
 }
 
