@@ -1,12 +1,11 @@
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useContext } from "react";
-import { StoreContext } from '../context';
 import { FormValues } from '../types';
 import axios from 'axios';
 import FormsHeader from '../components/FormsHeader';
 import FormFooter from '../components/FormFooter';
+import EducationCv from '../components/cv/EducationCv';
 
 
 type DegreeType = {
@@ -17,8 +16,6 @@ type DegreeType = {
 function Education() {
 
   const navigate = useNavigate();
-
-  const { contextImage } = useContext<any>(StoreContext)
 
   const [values, setValues] = useState<any>()
   const [optionsValues, setOptionsValues] = useState<DegreeType[]>([])
@@ -211,7 +208,7 @@ function Education() {
     </form>
 
         <div>
-            {getValues("educations").map((item) =>  {
+            {/* {getValues("educations").map((item) =>  {
             return  <section key={Math.floor(Math.random() * (1000000 - 1 + 1) + 1)} >
                   <p>{item.institute}</p>
                   <p>{item.degree_id }</p>
@@ -219,8 +216,12 @@ function Education() {
                   <p>{item.description}</p>
                   <hr />
               </section>
-            }) }
+            }) } */}
+
+              <EducationCv educations={getValues("educations")} />
+
         </div>
+
     </div>
   )
 }

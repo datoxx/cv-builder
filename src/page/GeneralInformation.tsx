@@ -1,23 +1,24 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useContext } from "react";
-import { StoreContext } from '../context';
+import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { FormContext } from "../context";
 
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import FormsHeader from '../components/FormsHeader';
 import FormFooter from '../components/FormFooter';
 import styled from 'styled-components';
 import errorIcon from '../assets/images/errorIcon.png';
 import okIcon from '../assets/images/okIcon.png';
+import { GenralInfoType } from '../context/index';
+import GeneralCv from '../components/cv/GeneralCv';
 
 
 function GeneralInformation() {
 
-  const [image, setImage] = useState("")
-  const [values, setValues] = useState()
+  const {image, setImage, values, setGeneraInfoValues} = useContext<any>(FormContext)
 
   const navigate = useNavigate();
-  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<GenralInfoType>({
     mode: "onChange",
     values
   });
@@ -29,13 +30,14 @@ function GeneralInformation() {
     const formValues = JSON.parse(jsonStr);
 
     setImage(formValues.image)
-    setValues(formValues)
+    setGeneraInfoValues(formValues)
 
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
+
     localStorage.setItem("generalInfo", JSON.stringify(watch()));  
 
     if(image !== "") {
@@ -45,7 +47,7 @@ function GeneralInformation() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch(), image])
- 
+
 
   const handleImage = (e: any) => {
     const reader = new FileReader();
@@ -56,19 +58,14 @@ function GeneralInformation() {
   const onSubmit = (data: any) => {
     console.log( "dataaaa", data);
     navigate("/experience");
-  }
-
-console.log("erorrrr>>", errors)  
+  } 
 
   return (
     <MainContainer>
       <WorkSpace>
-        
         <FormsHeader />
             <Form  onSubmit={handleSubmit(onSubmit)} >
-
               <UserNameAndSurnameContainer error={errors.name?.type} >
-
                 <LableInputSpanContainer>
                   <Lable error={errors.name?.type && watch("name") !== "" } htmlFor="name">სახელი</Lable>
                   <InputAndErrorConainer >
@@ -105,9 +102,7 @@ console.log("erorrrr>>", errors)
                   </InputAndErrorConainer>
                   <Preface>მინიმუმ 2 ასო, ქართული ასოები</Preface>
                 </LableInputSpanContainer>
-
               </UserNameAndSurnameContainer>
-
 
                <ImageInutContainer>
                 <span className='imgspan'>პირადი ფოტოს ატვირთვა</span>
@@ -117,7 +112,6 @@ console.log("erorrrr>>", errors)
                 {image && <img src={okIcon} alt="okIcon" />}
                 <ImageINput  id='image' type="file"  {...register('image', { required: image ? false : true, onChange: handleImage})} accept="image/*"/>
               </ImageInutContainer>
-
 
               <TextAreaLableInputSpanContainer>
                 <Lable error={errors.about_me?.type && watch("about_me") !== "" } htmlFor='about_me'>ჩემს შესახებ (არასავალდებულო)</Lable>
@@ -133,54 +127,53 @@ console.log("erorrrr>>", errors)
                 </TextAreaAndIcon>
               </TextAreaLableInputSpanContainer>
 
+              <LongLableInputSpanContainer>
+                  <Lable error={errors.email?.type && watch("email") !== "" } htmlFor="email">ელ.ფოსტა</Lable>
+                  <InputAndErrorConainer >
+                    <LongInputContainer 
+                        error={watch("email") !== "" &&  errors.email?.type}
+                        ok={watch("email") !== "" &&  !errors.email?.type}
+                     >
+                      <Input
+                         id="email" 
+                         type="text" 
+                         {...register("email", {required: true,  pattern:  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(redberry\.ge)$/ } )} 
+                      />
+                      {watch("email") === "" || errors.email?.type ?  null : <img src={okIcon} alt="okIcon" />}
+                    </LongInputContainer>
+                    { watch("email") !== "" &&  errors.email?.type ? <img src={errorIcon} alt="errorIcon" /> : null}
+                  </InputAndErrorConainer>
+                  <Preface>უნდა მთავრდებოდეს @redberry.ge-ით</Preface>
+                </LongLableInputSpanContainer>
 
-
-
-
-              <LongInputLableInputSpanContainer>
-                <Lable htmlFor="email" error={errors.email?.type && watch("email") !== "" }>ელ.ფოსტა</Lable>
-                <InputIcon>
-                  <LongInput
-                    error={watch("email") !== "" &&  errors.email?.type}
-                    ok={watch("email") !== "" &&  !errors.email?.type}
-                    id="email" 
-                    {...register("email", {required: true,  pattern:  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(redberry\.ge)$/ } )} 
-                  /> 
-                  {watch("email") !== "" &&  errors.email?.type ?  <img src={errorIcon} alt="errorIcon" /> : null}
-                  {watch("email") !== "" &&  !errors.email?.type ?  <img src={okIcon} alt="okIcon" /> : null}
-                </InputIcon>
-                <Preface>უნდა მთავრდებოდეს @redberry.ge-ით</Preface>
-              </LongInputLableInputSpanContainer>
-
-
-
-              <LongInputLableInputSpanContainer>
-                <Lable htmlFor="phone_number" error={errors.phone_number?.type && watch("phone_number") !== "" }>ელ.ფოსტა</Lable>
-                <InputIcon>
-                  <LongInput
-                    error={watch("phone_number") !== "" &&  errors.phone_number?.type}
-                    ok={watch("phone_number") !== "" &&  !errors.phone_number?.type}
-                    id="phone_number" 
-                    {...register("phone_number", { required: true,  pattern: /^(\+995)(79\d{7}|5\d{8})$/ })}  
-                  /> 
-                  {watch("phone_number") !== "" &&  errors.phone_number?.type ?  <img src={errorIcon} alt="errorIcon" /> : null}
-                  {watch("phone_number") !== "" &&  !errors.phone_number?.type ?  <img src={okIcon} alt="okIcon" /> : null}
-                </InputIcon>
-                <Preface>უნდა აკმაყოფილებდეს ქართული მობილურის ნომრის ფორმატს</Preface>
-              </LongInputLableInputSpanContainer>
-
+                <MobileLongLableInputSpanContainer>
+                  <Lable error={errors.phone_number?.type && watch("phone_number") !== "" } htmlFor="phone_number">მობილურის ნომერი</Lable>
+                  <InputAndErrorConainer >
+                    <LongInputContainer 
+                        error={watch("phone_number") !== "" &&  errors.phone_number?.type}
+                        ok={watch("phone_number") !== "" &&  !errors.phone_number?.type}
+                     >
+                      <Input
+                         id="phone_number" 
+                         type="text" 
+                         {...register("phone_number", { required: true,  pattern: /^(\+995)(79\d{7}|5\d{8})$/ })} 
+                      />
+                      {watch("phone_number") === "" || errors.phone_number?.type ?  null : <img src={okIcon} alt="okIcon" />}
+                    </LongInputContainer>
+                    { watch("phone_number") !== "" &&  errors.phone_number?.type ? <img src={errorIcon} alt="errorIcon" /> : null}
+                  </InputAndErrorConainer>
+                  <Preface>უნდა აკმაყოფილებდეს ქართული მობილურის ნომრის ფორმატს</Preface>
+                </MobileLongLableInputSpanContainer>
                 <FormFooter />
             </Form>   
       </WorkSpace>
 
       <div className='showplace'>
 
-          { watch("name") }
-          {watch("surname")}
-          {image !== "" && <img src={image} alt="es aris fhoto" />}
-          { watch("about_me") }
-          { watch("email") }
-          {watch("phone_number")}
+          <GeneralCv
+              general={watch()}
+              image={image}
+          />
 
       </div>
       
@@ -299,19 +292,19 @@ const Preface = styled.span`
 
 // start image 
 const ImageInutContainer = styled.div`
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: 19px; 
-    margin-bottom: 49px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 19px; 
+  margin-bottom: 49px;
 
-    .imgspan {
-      font-style: normal;
-      font-weight: 500;
-      font-size: 18px;
-      line-height: 22px;
-      color: #1A1A1A;
-    }
+  .imgspan {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+    color: #1A1A1A;
+  }
 `
 
 const ImageLableWrapper = styled.div`
@@ -332,8 +325,6 @@ const ImageLableWrapper = styled.div`
     font-size: 14px;
     line-height: 17px;
   }
-
-
 `
 const ImageINput = styled.input`
   display: none;
@@ -372,38 +363,16 @@ const TextArea = styled.textarea<Props>`
 //end textarea
 
 
-// tavidna dasawria qveda nawili ra moklet 
-
-const LongInputLableInputSpanContainer = styled(LableInputSpanContainer)`
-  margin-bottom: 29px;
+//long input start
+const LongInputContainer = styled(InputContainer)`
+  min-width: 798px;
 `
 
-const InputIcon = styled.div`
-  display: flex;
-  align-items: center;
+const LongLableInputSpanContainer = styled(LableInputSpanContainer)`
   width: 100%;
-  gap: 13.5px;  
 `
 
-const LongInput = styled.input<Props>`
-  height: 48px;
-  width: 100%;
-  padding: 13px 16px;
-  background: #FFFFFF;
-  border: 1px solid ${props => props.error ? "red" : `${props.ok ? "#98E37E " : "#BCBCBC" }` };
-  border-radius: 4px;  
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 21px;
-  color: #000000;
-
-  &::placeholder {
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 21px;
-    color: rgba(0, 0, 0, 0.6);
-  }
+const MobileLongLableInputSpanContainer = styled(LongLableInputSpanContainer)`
+  margin-top: 29px;
 `
 

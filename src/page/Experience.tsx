@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { FormValues } from '../types';
 import FormsHeader from '../components/FormsHeader';
 import FormFooter from '../components/FormFooter';
+import ExperienceCv from '../components/cv/ExperienceCv';
 
 
 function Experience() {
@@ -134,17 +135,9 @@ function Experience() {
         </form>
 
             <div>
-                {getValues("experiences").map((item) =>  {
-                 return  <section key={Math.floor(Math.random() * (1000000 - 1 + 1) + 1)} >
-                      <p>{item.position}</p>
-                      <p>{item.employer}</p>
-                      <p>{item.description}</p>
-                      <p>{item.start_date}</p>
-                      <p>{item.due_date}</p>
-                      <hr />
-                  </section>
-                }) }
+                <ExperienceCv experiences={getValues("experiences")} />
             </div>
+
     </div>
   )
 }
