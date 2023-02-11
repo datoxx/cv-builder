@@ -1,4 +1,5 @@
 import { createContext,  useState } from "react";
+import { EducationType } from '../types/index';
 
 
 export type FormContextProps = {
@@ -37,11 +38,6 @@ type FromsData = {
 }
 
 
-export interface GeneralInfoContext {
-  generaInfoValues: GenralInfoType;
-  setGeneraInfoValues: (e:GenralInfoType) => void
-}
-
 
 export const FormContext = createContext<any>({
   generaInfoValues: {},
@@ -50,13 +46,12 @@ export const FormContext = createContext<any>({
 
 const FormsContext = ({children}: FormContextProps) => {
 
-    const [values, setGeneraInfoValues] = useState()
+    const [experienceValues, setExperienceValues] = useState()
+    const [educations, setEducations] = useState<EducationType[]>([])
     const [image, setImage] = useState("")
 
-    const [formsData, setFormsData] = useState();
-
     return ( 
-      <FormContext.Provider value={{values, setGeneraInfoValues, image, setImage}}>
+      <FormContext.Provider value={{experienceValues, setExperienceValues, educations, setEducations, image, setImage}}>
          { children }
       </FormContext.Provider>
      );

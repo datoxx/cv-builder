@@ -1,16 +1,32 @@
-import { useFieldArray, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { FormValues } from '../types';
+//icons
+import errorIcon from '../assets/images/errorIcon.png';
+import okIcon from '../assets/images/okIcon.png';
+//style
+import { Form, FromSection, MainContainer, WorkSpace } from '../styled-components/layout/form/container';
+import { CvContainer, CvWrapper } from '../styled-components/layout/cv/container';
+import { DateInput, DateLable, DatesContainer,
+        IconAndInputContainer, Input, InputAndErrorConainer, Lable,
+        LongInputContainer, LongLableInputSpanContainer, Preface } from '../styled-components/inputs/Input';
+//componnets
 import FormsHeader from '../components/FormsHeader';
 import FormFooter from '../components/FormFooter';
 import ExperienceCv from '../components/cv/ExperienceCv';
+import { TextArea, TextAreaAndIcon, TextAreaLableInputSpanContainer } from '../styled-components/inputs/TextArea';
+//hooks
+import { useFieldArray, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { FormContext } from "../context";
+import { useContext } from 'react';
+//types
+import { FormValues } from '../types';
+import { AddButton, RemoveButton } from '../styled-components/button/button';
 
 
 function Experience() {
 
   const navigate = useNavigate();
-  const [values, setValues] = useState()
+  const context = useContext<any>(FormContext)
 
   const { register, handleSubmit, watch, getValues, formState: { errors }, control } = useForm<FormValues>({
     mode: "onChange",
@@ -23,7 +39,7 @@ function Experience() {
         due_date: ""
      }]
     },
-    values
+    values: context.experienceValues
   });
 
 
@@ -33,7 +49,7 @@ function Experience() {
     if (jsonStr === null ) return;
     const formValues = JSON.parse(jsonStr);
 
-    setValues(formValues)
+    context.setExperienceValues(formValues)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -57,8 +73,6 @@ function Experience() {
 
   }
  
-  // console.log("uyure>>", watch().experience)
-
   const checkRequired = (index: number) => {
         for (let [key, value] of Object.entries(watch().experiences?.[index])) {
           if(value !== "") {
@@ -67,57 +81,112 @@ function Experience() {
             return false
           }
       }
-    
-
   }
 
-  console.log(getValues("experiences"))
-
-  return (
-    <div>
-
+  return (  
+    <MainContainer>
+      <WorkSpace >
         <FormsHeader />
-
-        <form  onSubmit={handleSubmit(onSubmit)} >
-
+        <Form onSubmit={handleSubmit(onSubmit)} >
 
           {fields.map((field, index) => {
-            return <section key={field.id} >
+            return <FromSection key={field.id} >
 
-                <label >
-                  <span>თანამდებობა</span>
-                  <input type="text"  {...register(`experiences.${index}.position`, {required: index === 0 ? true : checkRequired(index) , minLength: 2, })}  />
-                </label>
+                <LongLableInputSpanContainer>
+                  <Lable error={errors.experiences?.[index]?.position && watch(`experiences.${index}.position`)  !== "" } htmlFor="position">თანამდებობა</Lable>
+                  <InputAndErrorConainer >
+                    <LongInputContainer 
+                        error={ watch(`experiences.${index}.position`) !== "" &&  errors.experiences?.[index]?.position}
+                        ok={ watch(`experiences.${index}.position`) !== "" &&  !errors.experiences?.[index]?.position}
+                      >
+                      <Input
+                          id="position" 
+                          type="text" 
+                          {...register(`experiences.${index}.position`, {required: index === 0 ? true : checkRequired(index) , minLength: 2, })} 
+                      />
+                      { watch(`experiences.${index}.position`) === "" || errors.experiences?.[index]?.position ?  null : <img src={okIcon} alt="okIcon" />}
+                    </LongInputContainer>
+                    {  watch(`experiences.${index}.position`) !== "" && errors.experiences?.[index]?.position ? <img src={errorIcon} alt="errorIcon" /> : null}
+                  </InputAndErrorConainer>
+                  <Preface>მინიმუმ 2 სიმბოლო</Preface>
+                </LongLableInputSpanContainer>
 
 
-                <label>
-                <span>დამსაქმებელი</span>
-                   <input   type="text" {...register(`experiences.${index}.employer`, {required: index === 0 ? true : checkRequired(index), minLength:2, })} />
-                </label>
+                <LongLableInputSpanContainer style={{margin: "31px 0 31px 0"}} >
+                  <Lable error={errors.experiences?.[index]?.employer && watch(`experiences.${index}.employer`)  !== "" } htmlFor="employer">დამსაქმებელი</Lable>
+                  <InputAndErrorConainer >
+                    <LongInputContainer 
+                        error={ watch(`experiences.${index}.employer`) !== "" &&  errors.experiences?.[index]?.employer}
+                        ok={ watch(`experiences.${index}.employer`) !== "" &&  !errors.experiences?.[index]?.employer}
+                      >
+                      <Input
+                          id="employer" 
+                          type="text" 
+                          {...register(`experiences.${index}.employer`, {required: index === 0 ? true : checkRequired(index), minLength:2, })} 
+                      />
+                      { watch(`experiences.${index}.employer`) === "" || errors.experiences?.[index]?.employer ?  null : <img src={okIcon} alt="okIcon" />}
+                    </LongInputContainer>
+                    {  watch(`experiences.${index}.employer`) !== "" && errors.experiences?.[index]?.employer ? <img src={errorIcon} alt="errorIcon" /> : null}
+                  </InputAndErrorConainer>
+                  <Preface>მინიმუმ 2 სიმბოლო</Preface>
+                </LongLableInputSpanContainer>
 
 
-                <label>
-                <span>დაწყების დრო</span>
-                <input type="date" {...register(`experiences.${index}.start_date`, { required: index === 0 ? true : checkRequired(index) })} />
-                </label>
+                <DatesContainer>
 
-                <label>
-                <span>დამთავრების დრო</span>
-                <input type="date" {...register(`experiences.${index}.due_date`,  {required: index === 0 ? true : checkRequired(index)  })} />
-                </label>
+                  <IconAndInputContainer>
+                    <DateLable htmlFor='start_date' >
+                      <span className='dateSpan' >დაწყების დრო</span>
+                      <DateInput
+                        error={ watch(`experiences.${index}.start_date`) !== "" &&  errors.experiences?.[index]?.start_date}
+                        ok={ watch(`experiences.${index}.start_date`) !== "" &&  !errors.experiences?.[index]?.start_date}
+                        id="start_date" 
+                        type="date"
+                        {...register(`experiences.${index}.start_date`, { required: index === 0 ? true : checkRequired(index) })} 
+                      />
+                    </DateLable>
+                    { watch(`experiences.${index}.start_date`) === "" || errors.experiences?.[index]?.start_date ?  null : <img src={okIcon} alt="okIcon" />}
+                    { watch(`experiences.${index}.start_date`) !== "" && errors.experiences?.[index]?.start_date ? <img src={errorIcon} alt="errorIcon" /> : null}
+                  </IconAndInputContainer>
 
-                <label >
-                <span>Description</span>
-                <textarea   {...register(`experiences.${index}.description`, {  required: index === 0 ? true : checkRequired(index) })} /> 
-                </label>
+                  <IconAndInputContainer>
+                    <DateLable  htmlFor='due_date' >
+                      <span className='dateSpan' >დამთავრების დრო</span>
+                      <DateInput 
+                        error={ watch(`experiences.${index}.due_date`) !== "" &&  errors.experiences?.[index]?.due_date}
+                        ok={ watch(`experiences.${index}.due_date`) !== "" &&  !errors.experiences?.[index]?.due_date}                     
+                        id="due_date"
+                        type="date" 
+                        {...register(`experiences.${index}.due_date`,  {required: index === 0 ? true : checkRequired(index)  })} 
+                      />
+                    </DateLable>
+                    { watch(`experiences.${index}.due_date`) === "" || errors.experiences?.[index]?.due_date ?  null : <img src={okIcon} alt="okIcon" />}
+                    { watch(`experiences.${index}.due_date`) !== "" && errors.experiences?.[index]?.due_date ? <img src={errorIcon} alt="errorIcon" /> : null}
+                  </IconAndInputContainer>
 
-             {index > 0 && <button type='button' onClick={() => remove(index)} >წაშლა</button>}
-            </section>
+                </DatesContainer>
+
+                <TextAreaLableInputSpanContainer style={{marginTop: "31px"}}>
+                  <Lable error={errors.experiences?.[index]?.description && watch(`experiences.${index}.description`) !== "" } htmlFor='description'>აღწერა</Lable>
+                  <TextAreaAndIcon>
+                    <TextArea
+                      error={ watch(`experiences.${index}.description`) !== "" &&  errors.experiences?.[index]?.description}
+                      ok={ watch(`experiences.${index}.description`) !== "" &&  !errors.experiences?.[index]?.description} 
+                      id="description" 
+                      {...register(`experiences.${index}.description`, {  required: index === 0 ? true : checkRequired(index) })}
+                    /> 
+                    {watch(`experiences.${index}.description`) !== "" &&  errors.experiences?.[index]?.description?  <img src={errorIcon} alt="errorIcon" /> : null}
+                    {watch(`experiences.${index}.description`) !== "" &&  !errors.experiences?.[index]?.description ?  <img src={okIcon} alt="okIcon" /> : null}
+                  </TextAreaAndIcon>
+                </TextAreaLableInputSpanContainer>
+
+             {index > 0 && <RemoveButton type='button' onClick={() => remove(index)} >წაშლა</RemoveButton>}
+            </FromSection>
             
           })}
 
 
-          <button type='button' onClick={() => {
+          <AddButton type='button' onClick={() => {
             append({
               position: "",
               employer: "",
@@ -126,20 +195,26 @@ function Experience() {
               due_date: ""
             })
           }}>
-            დაამატე ახალი
-          </button>
+            მეტი გამოცდილების დამატება
+          </AddButton>
           
           <FormFooter />
 
+         </Form>
+      </WorkSpace>
 
-        </form>
 
-            <div>
-                <ExperienceCv experiences={getValues("experiences")} />
-            </div>
+      <CvWrapper>
+        <CvContainer>
+          <ExperienceCv experiences={getValues("experiences")} />
+          </CvContainer>
+      </CvWrapper>
 
-    </div>
+    </MainContainer>
   )
 }
 
-export default Experience
+export default Experience;
+
+
+

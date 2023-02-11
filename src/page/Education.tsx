@@ -1,14 +1,29 @@
+//icons
+import errorIcon from '../assets/images/errorIcon.png';
+import okIcon from '../assets/images/okIcon.png';
+//hooks
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { FormValues } from '../types';
+import { EducationType, ExperiencesType, FormValues } from '../types';
 import axios from 'axios';
+//components
 import FormsHeader from '../components/FormsHeader';
 import FormFooter from '../components/FormFooter';
 import EducationCv from '../components/cv/EducationCv';
+//style
+import { Form, FromSection, MainContainer, WorkSpace } from '../styled-components/layout/form/container';
+import { CvContainer, CvWrapper } from '../styled-components/layout/cv/container';
+import { DateInput, DateLable, DatesContainer, IconAndInputContainer, Input,
+        InputAndErrorConainer, Lable, LongInputContainer,
+        LongLableInputSpanContainer, Preface } from '../styled-components/inputs/Input';
+import styled from 'styled-components';
+import { Props } from '../types/styldProps';
+import { TextArea, TextAreaAndIcon, TextAreaLableInputSpanContainer } from '../styled-components/inputs/TextArea';
+import { AddButton, RemoveButton } from '../styled-components/button/button';
 
 
-type DegreeType = {
+export type DegreeType = {
   id: number,
   title: string
 }
@@ -16,9 +31,13 @@ type DegreeType = {
 function Education() {
 
   const navigate = useNavigate();
-
+  
   const [values, setValues] = useState<any>()
   const [optionsValues, setOptionsValues] = useState<DegreeType[]>([])
+  const [generadlinfo, setGeneradlinfo] = useState<any>([])
+  const [experiences, setExperiences] = useState<any>([])
+  const [educations, setEducations] = useState<EducationType[]>([])
+
 
   const { register, handleSubmit, watch, getValues, formState: { errors }, control } = useForm<FormValues>({
     mode: "onChange",
@@ -46,16 +65,23 @@ function Education() {
     const jsonStr = localStorage.getItem("educations");
     if (jsonStr === null ) return;
     const formValues = JSON.parse(jsonStr);
-
     setValues(formValues)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    const jsongeneralinfo = localStorage.getItem("generalInfo");
+    const jsonexperiences = localStorage.getItem("experiences");
+    const jsoneducations = localStorage.getItem("educations");
+
+    if (jsongeneralinfo === null || jsonexperiences === null || jsoneducations === null ) return;
+    setGeneradlinfo(JSON.parse((jsongeneralinfo)));
+    setExperiences(JSON.parse((jsonexperiences)));
+    setEducations(JSON.parse((jsoneducations)));
+
+
   }, [])
 
   useEffect(() => {
     localStorage.setItem("educations", JSON.stringify(watch()));  
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch()])
  
 
@@ -68,48 +94,27 @@ function Education() {
 
     console.log( "dataaaa", data);
 
-    const jsongeneralinfo = localStorage.getItem("generalInfo");
-    const jsonexperiences = localStorage.getItem("experiences");
-    const jsoneducations = localStorage.getItem("educations");
-
-    if (jsongeneralinfo === null || jsonexperiences === null || jsoneducations === null ) return;
-
-    const generadlinfo =  JSON.parse((jsongeneralinfo))
-    const experiences =  JSON.parse((jsonexperiences))
-    const educations =  JSON.parse((jsoneducations))
-
-    console.log("localstorage generalinfo", generadlinfo);
-    console.log("localstorage experiences", experiences);
-    console.log("localstorage educations", educations);
-    console.log("imageee>>>>bineryy>>>", generadlinfo.image);
-
-
-    const formData = new FormData();
-    formData.append('image', generadlinfo.image);
-
-    console.log("formData>>>", formData)
-
-
-
+    const FilterExperiences = experiences.experiences?.filter((item: ExperiencesType) => item?.position !== "" );
+    /* @ts-ignore */
+    const FilterEducations = educations.educations?.filter((item: EducationType) => item?.institute !== "" );
 
     const responsData = {
       name: generadlinfo.name,
       surname: generadlinfo.surname,
       email: generadlinfo.email,
       phone_number: generadlinfo.phone_number,
-      ...experiences,
-      ...educations,
+      experiences: [...FilterExperiences],
+      educations: [...FilterEducations],
       about_me: generadlinfo.about_me
     }
 
-    console.log("responsData>>>>>>", responsData)
-
-    
+    console.log("responsData>>>>>>", responsData)   
 
     fetch(generadlinfo.image)
     .then((res) => res.blob())
     .then((blob) => {
       const newFile = new File([blob], "image");
+      /* @ts-ignore */
       responsData.image = newFile;
       sendResponse(responsData as any);
     });
@@ -123,14 +128,7 @@ function Education() {
       });
       
       console.log("beqidan dabrunebuli pasuxiii>>>>", response.data)
-
     }
-
-
-
-
-
-
 
     // navigate("/resume");
 
@@ -144,86 +142,146 @@ function Education() {
             return false
           }
       }
-    
-
   }
 
   return (
-    <div>
+    <MainContainer>
+      <WorkSpace>
+        <FormsHeader />
+        <Form  onSubmit={handleSubmit(onSubmit)} >
+          {fields.map((field, index) => {
+            return <FromSection key={field.id} >
+              <LongLableInputSpanContainer>
+                <Lable error={errors.educations?.[index]?.institute && watch(`educations.${index}.institute`)  !== "" } htmlFor="institute">სასწავლებელი</Lable>
+                <InputAndErrorConainer >
+                  <LongInputContainer 
+                      error={ watch(`educations.${index}.institute`) !== "" &&  errors.educations?.[index]?.institute}
+                      ok={ watch(`educations.${index}.institute`) !== "" &&  !errors.educations?.[index]?.institute}
+                    >
+                    <Input
+                        id="institute" 
+                        type="text" 
+                        {...register(`educations.${index}.institute`, {required: index === 0 ? true : checkRequired(index) , minLength: 2, })} 
+                    />
+                    { watch(`educations.${index}.institute`) === "" || errors.educations?.[index]?.institute ?  null : <img src={okIcon} alt="okIcon" />}
+                  </LongInputContainer>
+                  {  watch(`educations.${index}.institute`) !== "" && errors.educations?.[index]?.institute ? <img src={errorIcon} alt="errorIcon" /> : null}
+                </InputAndErrorConainer>
+                <Preface>მინიმუმ 2 სიმბოლო</Preface>
+              </LongLableInputSpanContainer>
 
-    <FormsHeader />
+              <DatesContainer style={{margin: "31px 0 34px 0"}}>
+                <IconAndInputContainer>
+                  <DateLable htmlFor='degree_id' >
+                    <span className='dateSpan' >ხარისხში</span>
+                    <Selector 
+                      error={ watch(`educations.${index}.degree_id`) !== "" &&  errors.educations?.[index]?.degree_id}
+                      ok={ watch(`educations.${index}.degree_id`) !== "" &&  !errors.educations?.[index]?.degree_id}
+                      {...register(`educations.${index}.degree_id`,  {required: index === 0 ? true : checkRequired(index)  })}
+                    >
+                      <option style={{display:"none"}} selected>
+                        {
+                        values?.educations?.[index]?.degree_id
+                        ? optionsValues.find((item:DegreeType) => item?.id === values?.educations?.[index]?.degree_id )?.title 
+                        : "აირჩიეთ ხარისხი " 
+                        } 
+                        </option>
+                      {optionsValues?.map((value:DegreeType) => (
+                        <option key={value.id} value={value.id}>{value.title}</option>
+                      ))}
+                    </Selector >
+                  </DateLable>
+                  { watch(`educations.${index}.degree_id`) === "" || errors.educations?.[index]?.degree_id ?  null : <img src={okIcon} alt="okIcon" />}
+                  { watch(`educations.${index}.degree_id`) !== "" && errors.educations?.[index]?.degree_id ? <img src={errorIcon} alt="errorIcon" /> : null}
+                </IconAndInputContainer>
 
-    <form  onSubmit={handleSubmit(onSubmit)} >
+                <IconAndInputContainer>
+                  <DateLable  htmlFor='education_due_date' >
+                    <span className='dateSpan' >დამთავრების დრო</span>
+                    <DateInput 
+                      error={ watch(`educations.${index}.due_date`) !== "" &&  errors.educations?.[index]?.due_date}
+                      ok={ watch(`educations.${index}.due_date`) !== "" &&  !errors.educations?.[index]?.due_date}                     
+                      id="education_due_date"
+                      type="date" 
+                      {...register(`educations.${index}.due_date`,  {required: index === 0 ? true : checkRequired(index)  })} 
+                    />
+                  </DateLable>
+                  { watch(`educations.${index}.due_date`) === "" || errors.educations?.[index]?.due_date ?  null : <img src={okIcon} alt="okIcon" />}
+                  { watch(`educations.${index}.due_date`) !== "" && errors.educations?.[index]?.due_date ? <img src={errorIcon} alt="errorIcon" /> : null}
+                </IconAndInputContainer>
+              </DatesContainer>
 
+              <TextAreaLableInputSpanContainer>
+                <Lable error={errors.educations?.[index]?.description && watch(`educations.${index}.description`) !== "" } htmlFor='description'>აღწერა</Lable>
+                <TextAreaAndIcon>
+                  <TextArea
+                    error={ watch(`educations.${index}.description`) !== "" &&  errors.educations?.[index]?.description}
+                    ok={ watch(`educations.${index}.description`) !== "" &&  !errors.educations?.[index]?.description} 
+                    id="description" 
+                    {...register(`educations.${index}.description`, {  required: index === 0 ? true : checkRequired(index) })}
+                  /> 
+                  {watch(`educations.${index}.description`) !== "" &&  errors.educations?.[index]?.description?  <img src={errorIcon} alt="errorIcon" /> : null}
+                  {watch(`educations.${index}.description`) !== "" &&  !errors.educations?.[index]?.description ?  <img src={okIcon} alt="okIcon" /> : null}
+                </TextAreaAndIcon>
+              </TextAreaLableInputSpanContainer>
 
-      {fields.map((field, index) => {
-        return <section key={field.id} >
+            {index > 0 && <RemoveButton type='button' onClick={() => remove(index)} >წაშლა</RemoveButton>}
+            </FromSection>
+            
+          })}
 
-            <label >
-              <span>განათლება</span>
-              <input type="text"  {...register(`educations.${index}.institute`, {required: index === 0 ? true : checkRequired(index) , minLength: 2, })}  />
-            </label>
+          <AddButton type='button' onClick={() => {
+            append({
+              institute: "", 
+              degree_id: "",
+              due_date: "",
+              description: "",
+            })
+          }}>
+            მეტი გამოცდილების დამატება
+          </AddButton>
+          <FormFooter />
+        </Form>
+      </WorkSpace>
 
-
-            <label>
-            <span>ხარისხში</span>
-              <select {...register(`educations.${index}.degree_id`,  {required: index === 0 ? true : checkRequired(index)  })}>
-                  <option style={{display:"none"}} selected>{values?.educations[index].degree ? values?.educations[index].degree : "აირჩიეთ ხარისხი " } </option>
-                  {optionsValues?.map((value:DegreeType) => (
-                    <option key={value.id} value={value.id}>{value.title}</option>
-                  ))}
-              </select >
-            </label>
-
-            <label>
-            <span>დამთავრების დრო</span>
-            <input type="date" {...register(`educations.${index}.due_date`,  {required: index === 0 ? true : checkRequired(index)  })} />
-            </label>
-
-
-            <label >
-            <span>აღწერა</span>
-            <textarea   {...register(`educations.${index}.description`, {  required: index === 0 ? true : checkRequired(index) })} /> 
-            </label>
-
-        {index > 0 && <button type='button' onClick={() => remove(index)} >წაშლა</button>}
-        </section>
-        
-      })}
-
-
-      <button type='button' onClick={() => {
-        append({
-          institute: "", 
-          degree_id: "",
-          due_date: "",
-          description: "",
-        })
-      }}>
-        დაამატე ახალი
-      </button>
-      <FormFooter />
-
-
-    </form>
-
-        <div>
-            {/* {getValues("educations").map((item) =>  {
-            return  <section key={Math.floor(Math.random() * (1000000 - 1 + 1) + 1)} >
-                  <p>{item.institute}</p>
-                  <p>{item.degree_id }</p>
-                  <p>{item.due_date}</p>
-                  <p>{item.description}</p>
-                  <hr />
-              </section>
-            }) } */}
-
-              <EducationCv educations={getValues("educations")} />
-
-        </div>
-
-    </div>
+      <CvWrapper>
+        <CvContainer>
+            <EducationCv optionsValues={optionsValues} educations={getValues("educations")} />
+          </CvContainer>
+      </CvWrapper>
+    </MainContainer>
   )
 }
 
 export default Education
+
+
+const Selector = styled.select<Props>`
+  all: unset;
+  background: #FFFFFF;
+  border: 1px solid ${props => props.error ? "red" : `${props.ok ? "#98E37E " : "#BCBCBC" }` };
+  border-radius: 4px;
+  width: 335px;
+  height: 20px;
+  padding: 13px 16px;
+
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 21px;
+  color: rgba(0, 0, 0, 0.6);
+
+  & option {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    height: 41px;
+    line-height: 21px;
+    padding: 10px 16px;
+    background: #FFFFFF;    
+  }
+
+  &:hover {
+      cursor: pointer;
+    }
+`
