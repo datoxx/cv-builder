@@ -6,10 +6,17 @@ function FormFooter() {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const handleBack = (location: string) => {
+        if(location === "/experience") {
+            navigate("/general-information")
+        } else if( location === "/education") {
+            navigate("/experience")
+        }
+    }
 
   return (
     <Wrapper buttoEnd={location.pathname === "/general-information"}>
-        {location.pathname !== "/general-information" &&  <BackButton onClick={() => navigate(-1)}> უკან </BackButton>}
+        {location.pathname !== "/general-information" &&  <BackButton onClick={() => handleBack(location.pathname)}> უკან </BackButton>}
 
         <Button> {location.pathname === "/education" ? "დასრულება" :  "შემდეგი" }</Button>
         
@@ -25,8 +32,9 @@ interface WrapperProps {
 
 const Wrapper = styled.div<WrapperProps>`
     display: flex;
-    justify-content: ${props => props.buttoEnd ? "end": "space-around" };
+    justify-content: ${props => props.buttoEnd ? "end": "space-between" };
     align-items: center;
+    margin-top: 150px;
 `
 
 const Button = styled.button`

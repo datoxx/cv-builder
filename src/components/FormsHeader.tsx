@@ -7,11 +7,11 @@ function FormsHeader() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(location.pathname);
-
-
   const handleStartButton  = () =>{
-    // localStorage.clear();
+    window.localStorage.clear();
+    window.localStorage.removeItem("generalInfo");
+    window.localStorage.removeItem("apiData");
+
     navigate("/");
   }
 

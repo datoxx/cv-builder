@@ -1,7 +1,7 @@
 import React from 'react'
 import GeneralCv from './GeneralCv'
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { ExperienceContainer } from '../../styled-components/layout/cv/container';
 
 function ExperienceCv({experiences}: any) {
 
@@ -19,7 +19,7 @@ function ExperienceCv({experiences}: any) {
   }, [])
 
   return (
-    <Container>
+    <ExperienceContainer>
       <GeneralCv general={general} image={image} />
 
       <h4 className='experience' >გამოცდილება</h4>
@@ -32,56 +32,8 @@ function ExperienceCv({experiences}: any) {
             <p className='aboutJob' >{item.description}</p>
         </section>
         )})}
-    </Container>
+    </ExperienceContainer>
   )
 }
 
 export default ExperienceCv;
-
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-
-
-  .experienceSection {
-    padding-bottom: 32px;
-    border-bottom: 1px solid #C8C8C8;
-    margin-bottom: 26px;
-  }
-
-  .experience {
-    font-style: normal;
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 22px;
-    color: #F93B1D;
-  }
-
-  .abutWork{
-    font-style: normal;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 20px;
-    color: #1A1A1A;
-    margin: 15px 0 7px 0;
-  }
-
- .aboutDuration {
-    font-style: italic;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-    color: #919191;
- }
-
- .aboutJob {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 22px;
-  text-transform: capitalize;
-  color: #000000;
-  margin-top: 16px;
- }
-`

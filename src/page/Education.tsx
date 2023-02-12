@@ -36,7 +36,7 @@ function Education() {
   const [optionsValues, setOptionsValues] = useState<DegreeType[]>([])
   const [generadlinfo, setGeneradlinfo] = useState<any>([])
   const [experiences, setExperiences] = useState<any>([])
-  const [educations, setEducations] = useState<EducationType[]>([])
+  const [educations, setEducations] = useState<any>([])
 
 
   const { register, handleSubmit, watch, getValues, formState: { errors }, control } = useForm<FormValues>({
@@ -93,10 +93,9 @@ function Education() {
   const onSubmit =  (data: any) => {
 
     console.log( "dataaaa", data);
-
+      console.log("values>>>", watch('educations'))
     const FilterExperiences = experiences.experiences?.filter((item: ExperiencesType) => item?.position !== "" );
-    /* @ts-ignore */
-    const FilterEducations = educations.educations?.filter((item: EducationType) => item?.institute !== "" );
+    const FilterEducations = watch('educations')?.filter((item: EducationType) => item?.institute !== "" );
 
     const responsData = {
       name: generadlinfo.name,
@@ -121,16 +120,23 @@ function Education() {
 
     const sendResponse  = async (props: any) => {
 
-      const response = await axios.post("https://resume.redberryinternship.ge/api/cvs",  props, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      
-      console.log("beqidan dabrunebuli pasuxiii>>>>", response.data)
+    
+        const response = await axios.post("https://resume.redberryinternship.ge/api/cvs",  props, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        
+        console.log("beqidan dabrunebuli pasuxiii>>>>", response)
+        console.log("beqidan dabrunebuli pasuxiii>>>>", response.data)
+
+        if(response.data)  localStorage.setItem("apiData", JSON.stringify(response.data));  
+
+        navigate("/resume");
     }
 
-    // navigate("/resume");
+
+
 
   }
  

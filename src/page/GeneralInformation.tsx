@@ -33,7 +33,10 @@ function GeneralInformation() {
   const navigate = useNavigate();
   const { register, handleSubmit, watch, formState: { errors } } = useForm<GenralInfoType>({
     mode: "onChange",
-    values
+    values: {
+      ...values,
+      about_me: values?.about_me?.trim(),
+   }
   });
 
   useEffect(() => {
@@ -72,6 +75,7 @@ function GeneralInformation() {
     navigate("/experience");
   } 
 
+
   return (
     <MainContainer>
       <WorkSpace>
@@ -86,9 +90,10 @@ function GeneralInformation() {
                     ok={watch("name") !== "" &&  !errors.name?.type}
                   >
                   <Input
+                      placeholder='დავით'
                       id="name" 
                       type="text" 
-                    {...register("name", {required: true, minLength: 2,   pattern: /^[\u10A0-\u10FF]{2,}$/ })} 
+                    {...register("name", {required: true, minLength: 2,   pattern: /^[ა-ჰ]{2,}$/})} 
                   />
                   {watch("name") === "" || errors.name?.type ?  null : <img src={okIcon} alt="okIcon" />}
                 </InputContainer>
@@ -105,8 +110,9 @@ function GeneralInformation() {
                     ok={watch("surname") !== "" &&  !errors.surname?.type}
                   >
                   <Input 
+                     placeholder='არძენაძე'
                     id='surname' 
-                    type="text" {...register("surname", { required: true, minLength:2, pattern: /^[\u10A0-\u10FF]{2,}$/ })}
+                    type="text" {...register("surname", { required: true, minLength:2, pattern: /^[ა-ჰ]{2,}$/})}
                   />
                   {watch("surname") === ""|| errors.surname?.type  ?  null : <img src={okIcon} alt="okIcon" />}
                 </InputContainer>
@@ -132,7 +138,9 @@ function GeneralInformation() {
                 error={watch("about_me") !== "" &&  errors.about_me?.type}
                 ok={watch("about_me") !== "" &&  !errors.about_me?.type}
                 id="about_me" 
-                {...register("about_me", { pattern: /^[\u10A0-\u10FF]{2,}$/ } )} 
+                placeholder='ზოგადი ინფორმაცია ჩემს შესახებ'
+                /* @ts-ignore */
+                {...register("about_me", {required:  watch("about_me")?.length > 1 ? true : false,  pattern: /^[ა-ჰ\s]{2,}$/} )} 
               /> 
               {watch("about_me") !== "" &&  errors.about_me?.type ?  <img src={errorIcon} alt="errorIcon" /> : null}
               {watch("about_me") !== "" &&  !errors.about_me?.type ?  <img src={okIcon} alt="okIcon" /> : null}
@@ -147,9 +155,10 @@ function GeneralInformation() {
                     ok={watch("email") !== "" &&  !errors.email?.type}
                   >
                   <Input
+                     placeholder='dato@redberry.ge'
                       id="email" 
                       type="text" 
-                      {...register("email", {required: true,  pattern:  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(redberry\.ge)$/ } )} 
+                      {...register("email", {required: true,  pattern: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(redberry\.ge)$/ } )} 
                   />
                   {watch("email") === "" || errors.email?.type ?  null : <img src={okIcon} alt="okIcon" />}
                 </LongInputContainer>
@@ -166,6 +175,7 @@ function GeneralInformation() {
                     ok={watch("phone_number") !== "" &&  !errors.phone_number?.type}
                   >
                   <Input
+                     placeholder='+995593011121'
                       id="phone_number" 
                       type="text" 
                       {...register("phone_number", { required: true,  pattern: /^(\+995)(79\d{7}|5\d{8})$/ })} 
