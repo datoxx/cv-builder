@@ -1,23 +1,22 @@
 //icons
 import errorIcon from '../assets/images/errorIcon.png';
 import okIcon from '../assets/images/okIcon.png';
+import svStar from '../assets/images/svStar.svg';
 //style
 import { Form, FromSection, MainContainer, WorkSpace } from '../styled-components/layout/form/container';
 import { CvContainer, CvWrapper } from '../styled-components/layout/cv/container';
 import { DateInput, DateLable, DatesContainer,
         IconAndInputContainer, Input, InputAndErrorConainer, Lable,
         LongInputContainer, LongLableInputSpanContainer, Preface } from '../styled-components/inputs/Input';
+import { TextArea, TextAreaAndIcon, TextAreaLableInputSpanContainer } from '../styled-components/inputs/TextArea';
 //componnets
 import FormsHeader from '../components/FormsHeader';
 import FormFooter from '../components/FormFooter';
 import ExperienceCv from '../components/cv/ExperienceCv';
-import { TextArea, TextAreaAndIcon, TextAreaLableInputSpanContainer } from '../styled-components/inputs/TextArea';
 //hooks
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { FormContext } from "../context";
-import { useContext } from 'react';
+import { useEffect, useState } from 'react';
 //types
 import { FormValues } from '../types';
 import { AddButton, RemoveButton } from '../styled-components/button/button';
@@ -26,7 +25,7 @@ import { AddButton, RemoveButton } from '../styled-components/button/button';
 function Experience() {
 
   const navigate = useNavigate();
-  const context = useContext<any>(FormContext)
+  const [experienceValues, setExperienceValues] = useState()
 
   const { register, handleSubmit, watch, getValues, formState: { errors }, control } = useForm<FormValues>({
     mode: "onChange",
@@ -39,7 +38,7 @@ function Experience() {
         due_date: ""
      }]
     },
-    values: context.experienceValues
+    values: experienceValues
   });
 
 
@@ -49,14 +48,13 @@ function Experience() {
     if (jsonStr === null ) return;
     const formValues = JSON.parse(jsonStr);
 
-    context.setExperienceValues(formValues)
+    setExperienceValues(formValues)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     localStorage.setItem("experiences", JSON.stringify(watch()));  
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch()])
  
@@ -68,7 +66,6 @@ function Experience() {
 
 
   const onSubmit = (data: any) => {
-    console.log( "dataaaa", data);
     navigate("/education");
 
   }
@@ -207,6 +204,7 @@ function Experience() {
       <CvWrapper>
         <CvContainer>
           <ExperienceCv experiences={getValues("experiences")} />
+          <img className='svStar' src={svStar} alt="svStar icon" />
           </CvContainer>
       </CvWrapper>
 

@@ -11,6 +11,12 @@ export const CvWrapper = styled.div`
 export const CvContainer = styled.div`
   width: 680px;
   margin: 0 auto;
+  position: relative;
+  .svStar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+  }
 `
 
 export const GeneralInfoContainer = styled.div`

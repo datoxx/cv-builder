@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import ExperienceCv from './ExperienceCv';
 import { DegreeType } from '../../page/Education';
 import { EducationsContainer } from '../../styled-components/layout/cv/container';
+import { filterFromArray } from '../../utils';
 
 function EducationCv({educations, optionsValues}: any) {
 
@@ -25,7 +26,7 @@ function EducationCv({educations, optionsValues}: any) {
           <h4 className='education'>განათლება</h4>
 
           <div>
-            {educations?.map((item: any) =>  {
+            {filterFromArray(educations)?.map((item: any) =>  {
             return  (
             <section className='educationSection'  key={Math.floor(Math.random() * (10000000 - 1 + 1) + 1)} >
                   <p className='aboutEducation'> {item.institute},  {optionsValues?.find((obj: DegreeType) => obj?.id == item?.degree_id )?.title }</p>

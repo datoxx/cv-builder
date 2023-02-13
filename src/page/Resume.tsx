@@ -1,14 +1,15 @@
+//hooks
 import { useEffect, useState } from 'react';
 import {useNavigate } from 'react-router-dom';
-
+//style
 import { ContactInfo, CvContainer, CvWrapper, EducationsContainer, 
   ExperienceContainer, GeneralInfoContainer, IconAndContactInfoContainer, 
   ImageWrapper, InfoWrapper, TelIconAndContactInfoContainer } from '../styled-components/layout/cv/container';
 import BackArrow from '../assets/images/vector.svg';
-
+//icons
 import mailIcon from '../assets/images/mail.svg'
 import closeIcon from '../assets/images/closeIcon.svg'
-
+import svStar from '../assets/images/svStar.svg';
 import tel from '../assets/images/tel.svg'
 import styled from 'styled-components';
 
@@ -105,6 +106,9 @@ function Resume() {
                           )}) }
                       </div>
                 </EducationsContainer>
+                <div style={{marginTop: "220px"}}>
+                     <img  className='svStar' src={svStar} alt="svStar icon" />
+                </div>
           </CvContainer>
         </CvWrapper>
 

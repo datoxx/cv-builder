@@ -2,12 +2,11 @@
 import errorIcon from '../assets/images/errorIcon.png';
 import okIcon from '../assets/images/okIcon.png';
 import dropdown from '../assets/images/dropdown.svg';
-
+import svStar from '../assets/images/svStar.svg';
 //hooks
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { EducationType, ExperiencesType, FormValues } from '../types';
 import axios from 'axios';
 //components
 import FormsHeader from '../components/FormsHeader';
@@ -20,9 +19,11 @@ import { DateInput, DateLable, DatesContainer, IconAndInputContainer, Input,
         InputAndErrorConainer, Lable, LongInputContainer,
         LongLableInputSpanContainer, Preface } from '../styled-components/inputs/Input';
 import styled from 'styled-components';
-import { Props } from '../types/styldProps';
 import { TextArea, TextAreaAndIcon, TextAreaLableInputSpanContainer } from '../styled-components/inputs/TextArea';
 import { AddButton, RemoveButton } from '../styled-components/button/button';
+// types
+import { Props } from '../types/styldProps';
+import { EducationType, ExperiencesType, FormValues } from '../types';
 
 
 export type DegreeType = {
@@ -102,7 +103,7 @@ function Education() {
       about_me: generalDate.about_me,
     }
 
-      // @ts-ignore
+    // @ts-ignore
     fetch(generalDate.image)
     .then((res) => res.blob())
     .then((blob) => {
@@ -240,6 +241,7 @@ function Education() {
       <CvWrapper>
         <CvContainer>
             <EducationCv optionsValues={optionsValues} educations={getValues("educations")} />
+            <img className='svStar' src={svStar} alt="svStar icon" />
           </CvContainer>
       </CvWrapper>
     </MainContainer>

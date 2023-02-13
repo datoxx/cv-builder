@@ -1,7 +1,7 @@
 //icons
 import errorIcon from '../assets/images/errorIcon.png';
 import okIcon from '../assets/images/okIcon.png';
-
+import svStar from '../assets/images/svStar.svg';
 //styled
 import styled from 'styled-components';
 import { UserNameAndSurnameContainer,  LableInputSpanContainer,Lable, 
@@ -12,8 +12,6 @@ import { TextAreaLableInputSpanContainer, TextAreaAndIcon, TextArea } from '../s
 import { CvWrapper, CvContainer } from '../styled-components/layout/cv/container';
 import { MainContainer, Form,  WorkSpace } from '../styled-components/layout/form/container';
 //hooks
-import { FormContext } from "../context";
-import { useContext } from 'react';
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -21,13 +19,19 @@ import { useNavigate } from 'react-router-dom';
 import FormsHeader from '../components/FormsHeader';
 import FormFooter from '../components/FormFooter';
 import GeneralCv from '../components/cv/GeneralCv';
-//type
-import { GenralInfoType } from '../context/index';
 
+type GenralInfoType = {
+  name?: string;
+  surname?: string;
+  image?: string;
+  about_me?: string;
+  email?: string;
+  phone_number?: string;
+};
 
 function GeneralInformation() {
 
-  const {image, setImage} = useContext<any>(FormContext)
+  const [image, setImage] = useState("")
   const [values, setGeneraInfoValues] = useState<GenralInfoType>()
 
 
@@ -194,6 +198,7 @@ function GeneralInformation() {
       <CvWrapper>
         <CvContainer>
            <GeneralCv  general={watch()} image={image}  />
+           <img className='svStar' src={svStar} alt="svStar icon" />
         </CvContainer>
       </CvWrapper>
       
