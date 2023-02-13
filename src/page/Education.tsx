@@ -152,6 +152,7 @@ function Education() {
                       ok={ watch(`educations.${index}.institute`) !== "" &&  !errors.educations?.[index]?.institute}
                     >
                     <Input
+                        placeholder='სასწავლებელი'
                         id="institute" 
                         type="text" 
                         {...register(`educations.${index}.institute`, {required: index === 0 ? true : checkRequired(index) , minLength: 2, })} 
@@ -209,6 +210,7 @@ function Education() {
                 <Lable error={errors.educations?.[index]?.description && watch(`educations.${index}.description`) !== "" } htmlFor='description'>აღწერა</Lable>
                 <TextAreaAndIcon>
                   <TextArea
+                    placeholder='განათლების აღწერა'
                     error={ watch(`educations.${index}.description`) !== "" &&  errors.educations?.[index]?.description}
                     ok={ watch(`educations.${index}.description`) !== "" &&  !errors.educations?.[index]?.description} 
                     id="description" 

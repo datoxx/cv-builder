@@ -29,7 +29,7 @@ function GeneralCv({general, image}: any) {
       </InfoWrapper>
 
         <ImageWrapper>
-          {image ? <img src={image} alt="education" /> :  <img src={placeholder} alt="placeholder" />}
+          {image ? <img style={{objectFit: "cover"}} src={image} alt="education" /> :  <img src={placeholder} alt="placeholder" />}
         </ImageWrapper>
 
     </GeneralInfoContainer>

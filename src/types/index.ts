@@ -1,4 +1,13 @@
 
+export type GenralInfoType = {
+    name?: string;
+    surname?: string;
+    image?: string;
+    about_me?: string;
+    email?: string;
+    phone_number?: string;
+  };
+
 export type EducationType = {
     institute?: String | undefined;
     degree_id ?: string | number;

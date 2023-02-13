@@ -97,6 +97,7 @@ function Experience() {
                         ok={ watch(`experiences.${index}.position`) !== "" &&  !errors.experiences?.[index]?.position}
                       >
                       <Input
+                          placeholder='დეველოპერი, დიზაინერი, ა.შ.'
                           id="position" 
                           type="text" 
                           {...register(`experiences.${index}.position`, {required: index === 0 ? true : checkRequired(index) , minLength: 2, })} 
@@ -117,6 +118,7 @@ function Experience() {
                         ok={ watch(`experiences.${index}.employer`) !== "" &&  !errors.experiences?.[index]?.employer}
                       >
                       <Input
+                          placeholder='დამსაქმებელი'
                           id="employer" 
                           type="text" 
                           {...register(`experiences.${index}.employer`, {required: index === 0 ? true : checkRequired(index), minLength:2, })} 
@@ -167,6 +169,7 @@ function Experience() {
                   <Lable error={errors.experiences?.[index]?.description && watch(`experiences.${index}.description`) !== "" } htmlFor='description'>აღწერა</Lable>
                   <TextAreaAndIcon>
                     <TextArea
+                      placeholder='როლი თანამდებობაზე და ზოგადი აღწერა'
                       error={ watch(`experiences.${index}.description`) !== "" &&  errors.experiences?.[index]?.description}
                       ok={ watch(`experiences.${index}.description`) !== "" &&  !errors.experiences?.[index]?.description} 
                       id="description" 

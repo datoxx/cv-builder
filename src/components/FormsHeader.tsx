@@ -10,7 +10,7 @@ function FormsHeader() {
   const handleStartButton  = () =>{
     localStorage.removeItem("generalInfo");
     localStorage.removeItem("experiences");
-    localStorage.removeItem("experiences");
+    localStorage.removeItem("educations");
 
     navigate("/");
   }

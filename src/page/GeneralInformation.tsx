@@ -19,21 +19,13 @@ import { useNavigate } from 'react-router-dom';
 import FormsHeader from '../components/FormsHeader';
 import FormFooter from '../components/FormFooter';
 import GeneralCv from '../components/cv/GeneralCv';
-
-type GenralInfoType = {
-  name?: string;
-  surname?: string;
-  image?: string;
-  about_me?: string;
-  email?: string;
-  phone_number?: string;
-};
+//type
+import { GenralInfoType } from '../types';
 
 function GeneralInformation() {
 
   const [image, setImage] = useState("")
   const [values, setGeneraInfoValues] = useState<GenralInfoType>()
-
 
   const navigate = useNavigate();
   const { register, handleSubmit, watch, formState: { errors } } = useForm<GenralInfoType>({
@@ -43,6 +35,7 @@ function GeneralInformation() {
       about_me: values?.about_me?.trim(),
    }
   });
+
 
   useEffect(() => {
 
@@ -75,8 +68,7 @@ function GeneralInformation() {
     reader.readAsDataURL(e.target.files[0])
   }
     
-  const onSubmit = (data: any) => {
-    console.log( "dataaaa", data);
+  const onSubmit = (data: GenralInfoType) => {
     navigate("/experience");
   } 
 
