@@ -108,7 +108,15 @@ export const DateLable = styled.label`
   display: flex;
   flex-direction: column;
   gap: 8px;
-
+  position: relative;
+  z-index: 50;
+  
+  .dropdown {
+    position: absolute;
+    right: 20px;
+    top: 50px;
+    z-index: 100;
+  }
   .dateSpan {
     font-style: normal;
     font-weight: 500;

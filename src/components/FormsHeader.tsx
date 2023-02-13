@@ -8,9 +8,9 @@ function FormsHeader() {
   const location = useLocation();
 
   const handleStartButton  = () =>{
-    window.localStorage.clear();
-    window.localStorage.removeItem("generalInfo");
-    window.localStorage.removeItem("apiData");
+    localStorage.removeItem("generalInfo");
+    localStorage.removeItem("experiences");
+    localStorage.removeItem("experiences");
 
     navigate("/");
   }

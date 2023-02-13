@@ -1,6 +1,8 @@
 //icons
 import errorIcon from '../assets/images/errorIcon.png';
 import okIcon from '../assets/images/okIcon.png';
+import dropdown from '../assets/images/dropdown.svg';
+
 //hooks
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -28,15 +30,13 @@ export type DegreeType = {
   title: string
 }
 
+
 function Education() {
 
   const navigate = useNavigate();
   
   const [values, setValues] = useState<any>()
   const [optionsValues, setOptionsValues] = useState<DegreeType[]>([])
-  const [generadlinfo, setGeneradlinfo] = useState<any>([])
-  const [experiences, setExperiences] = useState<any>([])
-  const [educations, setEducations] = useState<any>([])
 
 
   const { register, handleSubmit, watch, getValues, formState: { errors }, control } = useForm<FormValues>({
@@ -67,21 +67,10 @@ function Education() {
     const formValues = JSON.parse(jsonStr);
     setValues(formValues)
 
-    const jsongeneralinfo = localStorage.getItem("generalInfo");
-    const jsonexperiences = localStorage.getItem("experiences");
-    const jsoneducations = localStorage.getItem("educations");
-
-    if (jsongeneralinfo === null || jsonexperiences === null || jsoneducations === null ) return;
-    setGeneradlinfo(JSON.parse((jsongeneralinfo)));
-    setExperiences(JSON.parse((jsonexperiences)));
-    setEducations(JSON.parse((jsoneducations)));
-
-
   }, [])
 
   useEffect(() => {
     localStorage.setItem("educations", JSON.stringify(watch()));  
-
   }, [watch()])
  
 
@@ -90,53 +79,50 @@ function Education() {
     control
   })
 
-  const onSubmit =  (data: any) => {
 
-    console.log( "dataaaa", data);
-      console.log("values>>>", watch('educations'))
-    const FilterExperiences = experiences.experiences?.filter((item: ExperiencesType) => item?.position !== "" );
-    const FilterEducations = watch('educations')?.filter((item: EducationType) => item?.institute !== "" );
+  const onSubmit = (data: any) => {
+      
+    const jsongeneralinfo = localStorage.getItem("generalInfo");
+    const jsonexperiences = localStorage.getItem("experiences");
+  
+    if (jsongeneralinfo === null || jsonexperiences === null) return;
+    const generalDate = JSON.parse((jsongeneralinfo));
+    const experienceDate =  JSON.parse((jsonexperiences));
+
+    const FilterExperiences = experienceDate.experiences?.filter((item: ExperiencesType) => item?.position !== "" );
+    const FilterEducations = data.educations?.filter((item: EducationType) => item?.institute !== "" );
 
     const responsData = {
-      name: generadlinfo.name,
-      surname: generadlinfo.surname,
-      email: generadlinfo.email,
-      phone_number: generadlinfo.phone_number,
-      experiences: [...FilterExperiences],
-      educations: [...FilterEducations],
-      about_me: generadlinfo.about_me
+      name: generalDate.name,
+      surname: generalDate.surname,
+      email: generalDate.email,
+      phone_number: generalDate.phone_number,
+      experiences: FilterExperiences,
+      educations: FilterEducations,
+      about_me: generalDate.about_me,
     }
 
-    console.log("responsData>>>>>>", responsData)   
-
-    fetch(generadlinfo.image)
+      // @ts-ignore
+    fetch(generalDate.image)
     .then((res) => res.blob())
     .then((blob) => {
       const newFile = new File([blob], "image");
-      /* @ts-ignore */
+      // @ts-ignore
       responsData.image = newFile;
-      sendResponse(responsData as any);
+      responseFu(responsData as any)
     });
 
-    const sendResponse  = async (props: any) => {
-
-    
-        const response = await axios.post("https://resume.redberryinternship.ge/api/cvs",  props, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        
-        console.log("beqidan dabrunebuli pasuxiii>>>>", response)
-        console.log("beqidan dabrunebuli pasuxiii>>>>", response.data)
-
-        if(response.data)  localStorage.setItem("apiData", JSON.stringify(response.data));  
-
-        navigate("/resume");
+    const responseFu = async (props: any) => {
+      const response = await axios.post("https://resume.redberryinternship.ge/api/cvs",  props, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      if(response.data)  localStorage.setItem("apiData", JSON.stringify(response.data));  
+  
+      navigate("/resume");
     }
-
-
-
 
   }
  
@@ -180,6 +166,7 @@ function Education() {
                 <IconAndInputContainer>
                   <DateLable htmlFor='degree_id' >
                     <span className='dateSpan' >ხარისხში</span>
+                    <img className='dropdown' src={dropdown}  alt="dropdown" />
                     <Selector 
                       error={ watch(`educations.${index}.degree_id`) !== "" &&  errors.educations?.[index]?.degree_id}
                       ok={ watch(`educations.${index}.degree_id`) !== "" &&  !errors.educations?.[index]?.degree_id}
@@ -270,7 +257,7 @@ const Selector = styled.select<Props>`
   width: 335px;
   height: 20px;
   padding: 13px 16px;
-
+  position: relative;
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -290,4 +277,5 @@ const Selector = styled.select<Props>`
   &:hover {
       cursor: pointer;
     }
+
 `

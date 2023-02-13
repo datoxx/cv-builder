@@ -29,8 +29,10 @@ function Resume() {
 
 
   const handleStartButton  = () =>{
-    localStorage.clear();
     localStorage.removeItem("generalInfo");
+    localStorage.removeItem("experiences");
+    localStorage.removeItem("experiences");
+
 
     navigate("/");
   }
